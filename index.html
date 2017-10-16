@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Documentation</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="./index.js"></script>
+        <script>
+            Documentation.create({
+                title: 'WYSIWYG WEB COMPONENT',
+                menuGroups: [{
+                    title: 'TextEditable',
+                    menuItems: [{
+                        title: 'DataModel @@annotation@@',
+                        titleAnnotation: 'Title annotation',
+                        documentSections: [{
+                            type: 'HEADING',
+                            level: 1,
+                            text: 'WYSIWYG DataModel'
+                        }, {
+                            type: 'PARAGRAPH',
+                            text: 'Some text goes here'
+                        }, {
+                            type: 'CODEBLOCK',
+                            language: 'js',
+                            code: `
+                                function() {
+                                    console.log('Hello');
+                                }
+                            `
+                        }, {
+                            type: 'ORDERED_LIST',
+                            listItems: [{
+                                text: 'Option 1.',
+                                sublist: {
+                                    type: 'UNORDERED_LIST',
+                                    listItems: [{
+                                        text: 'Option 1.1.'
+                                    }, {
+                                        text: 'Option 1.2.'
+                                    }]
+                                }
+                            }]
+                        }, {
+                            type: 'PROPERTY',
+                            tags: ['NEW', 'READONLY'],
+                            returns: 'Array'
+                        }, {
+                            type: 'FUNCTION',
+                            params: [{
+                                type: 'String',
+                                description: 'Function description',
+                            }, {
+                                type: 'Function',
+                                fnParams: [{
+                                    type: 'String',
+                                    description: 'Callback param description'
+                                }]
+                            }],
+                            returns: 'Array'
+                        }]
+                    }]
+                }]
+            });
+        </script>
+    </head>
+    <body></body>
+</html>
