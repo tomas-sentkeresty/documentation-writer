@@ -4,19 +4,26 @@
         <title>Documentation</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <script src="./index.js"></script>
+        <link href="styler/css/style.css" rel="stylesheet">
+        <script src="styler/js/script.js"></script>
+        <script src="js/script.js"></script>
         <script>
             Documentation.create({
                 title: 'WYSIWYG WEB COMPONENT',
                 menuGroups: [{
                     title: 'TextEditable',
+                    documentSections: [{
+                        type: 'HEADING',
+                        level: 1,
+                        text: 'TextEditable'
+                    }],
                     menuItems: [{
-                        title: 'DataModel @@annotation@@',
+                        title: 'DataModel',
                         titleAnnotation: 'Title annotation',
                         documentSections: [{
                             type: 'HEADING',
                             level: 1,
-                            text: 'WYSIWYG DataModel'
+                            text: 'DataModel'
                         }, {
                             type: 'PARAGRAPH',
                             text: 'Some text goes here'
@@ -58,6 +65,16 @@
                                 }]
                             }],
                             returns: 'Array'
+                        }]
+                    }, {
+                        title: 'API',
+                        documentSections: [{
+                            type: 'HEADING',
+                            level: 1,
+                            text: 'API'
+                        }, {
+                            type: 'PARAGRAPH',
+                            text: 'Some api will be here'
                         }]
                     }]
                 }]
