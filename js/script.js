@@ -66,9 +66,9 @@ var Documentation = (function() {
         U.domAppend('body', generateMenu(specification));
         U.domAppend('body', U.strHtml('div', {
             id: 'page',
-            classes: ['mt2'],
+            classes: ['mt3'],
             style: {
-                marginLeft: '280px',
+                marginLeft: '320px',
                 width: 'calc(100% - 330px)'
             },
             html: '-'
@@ -166,9 +166,14 @@ var Documentation = (function() {
             }
             return html;
             function getMenuTitleHtml(obj) {
+                var html = '';
+                if (obj.icon) {
+                    html += '<i class="fa fa-fw ' + obj.icon + '"></i> ';
+                }
+                html += obj.title || 'Unnamed documentation';
                 return U.strHtml('div', {
-                    classes: ['t3', 'pt2', 'px2', 'truncate', 'bold'],
-                    html: obj.title || 'Unnamed project'
+                    classes: ['t3', 'pt3', 'px2', 'truncate', 'bold'],
+                    html: html
                 });
             }
             function getMenuGroupHtml(html, menuGroup) {
@@ -223,19 +228,26 @@ var Documentation = (function() {
     }
     function getPageHtml(documentSections) {
         if (Array.isArray(documentSections) && documentSections.length > 0) {
-            return U.reduce(documentSections, getPageSectionHtml, '') || null;
+            return U.reduce(documentSections, function(html, section) {
+                html += U.strHtml('div', {
+                    classes: ['document-section', 'clearfix'],
+                    html: getPageSectionHtml(section)
+                });
+                return html;
+            }, '') || null;
         }
         return null;
-        function getPageSectionHtml(html, section) {
+        function getPageSectionHtml(section) {
             switch (section.type) {
                 case 'HEADING':
-                    html += getSectionHeadingHtml(section);
-                    return html;
+                    return getSectionHeadingHtml(section);
                 case 'PARAGRAPH':
-                    html += getSectionParagraphHtml(section);
-                    return html;
+                    return getSectionParagraphHtml(section);
+                case 'ORDERED_LIST':
+                case 'UNORDERED_LIST':
+                    return getSectionList(section);
                 default:
-                    return html;
+                    return '';
             }
         }
         function getSectionHeadingHtml(section) {
@@ -247,6 +259,42 @@ var Documentation = (function() {
             return U.strHtml('p', {
                 html: section.text
             })
+        }
+        function getSectionList(section, nested) {
+            if (Array.isArray(section.listItems) && section.listItems.length > 0) {
+                var ordered = section.type.startsWith('ORDERED');
+                var tag = ordered ? 'ol' : 'ul';
+                var listOptions = {
+                    classes: [],
+                    html: ''
+                };
+                if (nested) {
+                    listOptions.classes.push('pl2');
+                }
+                else {
+                    listOptions.classes.push('pt2');
+                }
+                if (!ordered) {
+                    listOptions.classes.push('list-disc');
+                }
+                listOptions.html += U.reduce(section.listItems, function(html, listItem) {
+                    var text = listItem.text || '-';
+                    if (typeof(listItem.sublist) === 'object' && Array.isArray(listItem.sublist.listItems) && listItem.sublist.listItems.length > 0) {
+                        html += U.strHtml('li', {
+                            html: text + getSectionList(listItem.sublist, true)
+                        });
+                        return html;
+                    }
+                    else {
+                        html += U.strHtml('li', {
+                            html: text
+                        });
+                        return html;
+                    }
+                }, '');
+                return U.strHtml(tag, listOptions);
+            }
+            return '';
         }
     }
     function bindRoutes(parameters, specification) {
