@@ -6,8 +6,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="styler/css/style.css" rel="stylesheet">
         <link href="styler/3rd/font-awesome/fontawesome.min.css" rel="stylesheet">
+        <!-- color-brewer, dark, dracula, github-gist, github, hopscotch, idea, magula, mono-blue, ocean, rainbow, tomorrow-night-eighties, vs2015 -->
+        <link href="code-styles/vs2015.css" rel="stylesheet">
         <script src="styler/js/script.js"></script>
         <script src="js/script.js"></script>
+        <script src="js/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
         <script>
             Documentation.create({
                 title: 'WYSIWYG WEB COMPONENT',
@@ -30,13 +34,12 @@
                             type: 'PARAGRAPH',
                             text: 'Some text goes here'
                         }, {
-                            type: 'CODEBLOCK',
+                            type: 'CODE',
                             language: 'js',
-                            code: `
-                                function() {
-                                    console.log('Hello');
-                                }
-                            `
+                            code:
+`function() {
+    console.log('Hello');
+}`
                         }, {
                             type: 'ORDERED_LIST',
                             listItems: [{
@@ -51,9 +54,25 @@
                                 }
                             }]
                         }, {
-                            type: 'PROPERTY',
-                            tags: ['NEW', 'READONLY'],
-                            returns: 'Array'
+                            type: 'HEADING',
+                            level: 2,
+                            text: 'Attributes'
+                        }, {
+                            type: 'ATTRIBUTE',
+                            tags: ['STATIC', 'READONLY'],
+                            meta: {
+                                name: 'attributeName1',
+                                description: 'Attribute description1',
+                                type: 'String'
+                            }
+                        }, {
+                            type: 'ATTRIBUTE',
+                            tags: ['STATIC', 'READONLY'],
+                            meta: {
+                                name: 'attributeName2',
+                                description: 'Attribute description2',
+                                type: 'Number'
+                            }
                         }, {
                             type: 'FUNCTION',
                             params: [{

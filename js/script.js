@@ -69,7 +69,7 @@ var Documentation = (function() {
             classes: ['mt3'],
             style: {
                 marginLeft: '320px',
-                width: 'calc(100% - 330px)'
+                width: 'calc(100% - 370px)'
             },
             html: '-'
         }));
@@ -246,6 +246,10 @@ var Documentation = (function() {
                 case 'ORDERED_LIST':
                 case 'UNORDERED_LIST':
                     return getSectionList(section);
+                case 'CODE':
+                    return getSectionCode(section);
+                case 'ATTRIBUTE':
+                    return getSectionAttribute(section);
                 default:
                     return '';
             }
@@ -271,9 +275,6 @@ var Documentation = (function() {
                 if (nested) {
                     listOptions.classes.push('pl2');
                 }
-                else {
-                    listOptions.classes.push('pt2');
-                }
                 if (!ordered) {
                     listOptions.classes.push('list-disc');
                 }
@@ -292,9 +293,65 @@ var Documentation = (function() {
                         return html;
                     }
                 }, '');
-                return U.strHtml(tag, listOptions);
+                if (nested) {
+                    return U.strHtml(tag, listOptions);
+                }
+                else {
+                    return U.strHtml('div', {
+                        classes: ['pt2', 'pb1'],
+                        html: U.strHtml(tag, listOptions)
+                    });
+                }
             }
             return '';
+        }
+    }
+    function getSectionCode(section) {
+        return U.strHtml('pre', {
+            style: {
+                overflowX: 'auto'
+            },
+            html: U.strHtml('code', {
+                style: {
+                    padding: '7px 10px',
+                    fontSize: '11px',
+                    lineHeight: '1.5em'
+                },
+                html: section.code
+            })
+        });
+    }
+    function getSectionAttribute(section) {
+        var row = '';
+        if (Array.isArray(section.tags) && section.tags.length > 0) {
+            U.forEach(section.tags, function(tag, i) {
+                row += U.strHtml('table-cell', {
+                    html: getTagHtml(tag, i === 0)
+                });
+            });
+        }
+        row += U.strHtml('table-cell', {
+            classes: ['align-middle', 't4', 'blue', 'pointer', 'ml2'],
+            html: section.meta.name || '-'
+        });
+        if (section.meta.type) {
+            row += U.strHtml('table-cell', {
+                classes: ['align-middle', 't5', 'ml2', 'silver', 'thin'],
+                html: section.meta.type
+            });
+        }
+        return U.strHtml('table', {
+            html: row
+        }) + '<hr>';
+        function getTagHtml(name, first) {
+            var classes = ['t8', 'px1', 'border', 'rounded', 'bg-silver'];
+            if (!first) {
+                classes.push('ml1');
+            }
+            return U.strHtml('span', {
+                classes: classes,
+                html: name || '-'
+            });
         }
     }
     function bindRoutes(parameters, specification) {
