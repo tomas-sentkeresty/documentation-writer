@@ -443,6 +443,9 @@ var Documentation = (function() {
                 });
                 function getBasicParameterBody(par) {
                     var html = '';
+                    if (par.defaultValue) {
+                        html += getDefaultValueHtml(par.defaultValue);
+                    }
                     if (par.description) {
                         html += par.description;
                     }
@@ -479,6 +482,9 @@ var Documentation = (function() {
                 });
                 function getFunctionParameterBody(par) {
                     var html = '';
+                    if (par.defaultValue) {
+                        html += getDefaultValueHtml(par.defaultValue);
+                    }
                     if (par.description) {
                         html += par.description;
                     }
@@ -512,6 +518,12 @@ var Documentation = (function() {
         return U.strHtml('div', {
             classes: ['js-expand-body', 'hide', 'pt1', 'pb2'],
             html: html || '-'
+        });
+    }
+    function getDefaultValueHtml(v) {
+        return U.strHtml('div', {
+            classes: ['red'],
+            html: 'Default value: ' + v
         });
     }
     function getTagsHtml(tags) {
