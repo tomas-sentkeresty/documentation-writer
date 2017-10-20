@@ -267,7 +267,7 @@ var Documentation = (function() {
         }
         function getSectionParagraphHtml(section) {
             return U.strHtml('p', {
-                html: section.text
+                html: markupToHtml(section.text)
             })
         }
         function getSectionList(section, nested) {
@@ -288,13 +288,13 @@ var Documentation = (function() {
                     var text = listItem.text || '-';
                     if (typeof(listItem.sublist) === 'object' && Array.isArray(listItem.sublist.listItems) && listItem.sublist.listItems.length > 0) {
                         html += U.strHtml('li', {
-                            html: text + getSectionList(listItem.sublist, true)
+                            html: markupToHtml(text) + getSectionList(listItem.sublist, true)
                         });
                         return html;
                     }
                     else {
                         html += U.strHtml('li', {
-                            html: text
+                            html: markupToHtml(text)
                         });
                         return html;
                     }
@@ -550,14 +550,22 @@ var Documentation = (function() {
         return html;
     }
     function markupToHtml(text) {
-        text = text.replace(/\[(.*)\]\((.*)\)/, function(whole, name, link) {
+        text = text.replace(/(<)|(>)/g, function(whole, less, greater) {
+            if (less) {
+                return '&lt;';
+            }
+            if (greater) {
+                return '&gt;'
+            }
+        });
+        text = text.replace(/\[(.*?)\]\((.*?)\)/g, function(whole, name, link) {
             return U.strHtml('a', {
                 classes: ['purple'],
                 href: link,
                 html: name
             });
         });
-        text = text.replace(/`(.*)`/, function(whole, inner) {
+        text = text.replace(/`(.*?)`/g, function(whole, inner) {
             return U.strHtml('span', {
                 classes: ['t8', 'px1', 'inline-block', 'white', 'bg-purple', 'rounded', 'sh1-border', 'thin'],
                 style: {

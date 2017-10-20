@@ -23,6 +23,9 @@
                         type: 'HEADING',
                         level: 1,
                         text: 'TextEditable'
+                    }, {
+                        type: 'PARAGRAPH',
+                        text: 'You can optionally create document sections for groups. All document sections that you can use to write docs are shown in [TextEditable.DataModel](?group=texteditable&item=datamodel).'
                     }],
                     menuItems: [{
                         title: 'DataModel',
@@ -33,7 +36,7 @@
                             text: 'DataModel'
                         }, {
                             type: 'PARAGRAPH',
-                            text: 'Some text goes here'
+                            text: 'To see how to create reference to this document see [TextEditable.API](?group=texteditable&item=api).'
                         }, {
                             type: 'CODE',
                             language: 'js',
@@ -44,13 +47,13 @@
                         }, {
                             type: 'ORDERED_LIST',
                             listItems: [{
-                                text: 'Option 1.',
+                                text: 'List first option.',
                                 sublist: {
                                     type: 'UNORDERED_LIST',
                                     listItems: [{
-                                        text: 'Option 1.1.'
+                                        text: 'Sublist first `test code` option.'
                                     }, {
-                                        text: 'Option 1.2.'
+                                        text: 'Sublist second option.'
                                     }]
                                 }
                             }]
@@ -60,15 +63,16 @@
                             text: 'Attributes'
                         }, {
                             type: 'ATTRIBUTE',
-                            tags: ['STATIC', 'READONLY'],
+                            tags: ['STATIC', 'NULLABLE'],
                             name: 'attributeName1',
-                            description: 'Attribute description1 [npm install gets killed](http://prashank.xyz/2016/01/24/npm_install_gets_killed/) and refers to `name` parameter.',
+                            description: `Description for \`attributeName1\` [first link to npm](http://prashank.xyz/2016/01/24/npm_install_gets_killed/) and refers to \`name\` parameter.
+                                New sentence with [second link to npm](http://prashank.xyz/2016/01/24/npm_install_gets_killed/).`,
                             returnType: 'String'
                         }, {
                             type: 'ATTRIBUTE',
                             tags: ['STATIC', 'READONLY'],
                             name: 'attributeName2',
-                            description: 'Attribute description2.',
+                            description: 'Description for `attributeName2`.',
                             returnType: 'Number'
                         }, {
                             type: 'HEADING',
@@ -109,7 +113,7 @@
                             text: 'API'
                         }, {
                             type: 'PARAGRAPH',
-                            text: 'Some api will be here'
+                            text: 'At this page we are referencing back to function defined in previous menu item. Available hash prefixes you can use for referencing are: `heading-<slug>`, `attribute-<slug>` and `function-<slug>`.'
                         }, {
                             type: 'HEADING',
                             level: 2,
@@ -118,7 +122,7 @@
                             type: 'ATTRIBUTE',
                             tags: [],
                             name: 'attributeName1',
-                            description: 'Attribute description1, see [DataModel.authenticate](?group=texteditable&item=datamodel#function-authenticate) and refers to `name` parameter.',
+                            description: 'Description for `attributeName1`, see [TextEditable.DataModel.authenticate](?group=texteditable&item=datamodel#function-authenticate).',
                             returnType: 'String'
                         }]
                     }]
