@@ -61,13 +61,13 @@
                             type: 'ATTRIBUTE',
                             tags: ['STATIC', 'READONLY'],
                             name: 'attributeName1',
-                            description: 'Attribute description1 [npm install gets killed](http://prashank.xyz/2016/01/24/npm_install_gets_killed/)',
+                            description: 'Attribute description1 [npm install gets killed](http://prashank.xyz/2016/01/24/npm_install_gets_killed/).',
                             returnType: 'String'
                         }, {
                             type: 'ATTRIBUTE',
                             tags: ['STATIC', 'READONLY'],
                             name: 'attributeName2',
-                            description: 'Attribute description2',
+                            description: 'Attribute description2.',
                             returnType: 'Number'
                         }, {
                             type: 'HEADING',
@@ -80,16 +80,21 @@
                             returnType: 'Object',
                             description: 'Delegate to authenticate user.',
                             parameters: [{
-                                type: 'Object',
+                                expectedType: 'Object',
                                 name: 'request',
-                                description: 'Function description',
+                                tags: ['OPTIONAL'],
+                                defaultValue: null,
+                                description: 'Request object.',
                             }, {
-                                type: 'Function',
+                                expectedType: 'Function',
                                 name: 'callback',
+                                tags: ['OPTIONAL'],
+                                description: 'Call this function when you are done.',
                                 parameters: [{
-                                    type: 'Object',
+                                    expectedType: 'Object',
                                     name: 'user',
-                                    description: 'Callback param description'
+                                    tags: ['OPTIONAL'],
+                                    description: 'Callback param description.'
                                 }]
                             }],
                             returns: 'Array'
@@ -109,5 +114,5 @@
             });
         </script>
     </head>
-    <body></body>
+    <body class="t5"></body>
 </html>

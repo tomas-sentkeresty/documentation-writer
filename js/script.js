@@ -14,7 +14,7 @@ var Documentation = (function() {
         find: function(arr,fn){for(var i=0;i<arr.length;i++){if(fn.call(null,arr[i],i,arr)){return arr[i];}}return null;},
         reduce: function(arr,fn,initial,context){var acc=(initial!==undefined&&initial!==null)?initial:arr[i++];for(var i=0;i<arr.length;i++){acc=fn.call(context,acc,arr[i],i,arr);}return acc;},
         clone: function(obj,skip,skipFunctions){if(!obj){return obj;}var type=typeof(obj);if(type!=='object'||obj instanceof Date){return obj;}var length;var o;if(obj instanceof Array){length=obj.length;o=new Array(length);for(var i=0;i<length;i++){type=typeof(obj[i]);if(type!=='object'||obj[i]instanceof Date){if(skipFunctions&&type==='function'){continue;}o[i]=obj[i];continue;}o[i]=U.clone(obj[i],skip,skipFunctions);}return o;}o={};for(var m in obj){if(skip&&skip[m]){continue;}var val=obj[m];var type=typeof(val);if(type!=='object'||val instanceof Date){if(skipFunctions&&type==='function'){continue;}o[m]=val;continue;}o[m]=U.clone(obj[m],skip,skipFunctions);}return o;},
-        contains: function(arrOrStr,v){if(!arrOrStr){throw new Error('invalidParameter');}if(typeof(arrOrStr)!=='string'&&!Array.isArray(arrOrStr)){throw new Error('invalidParameter');}return(arrOrStr.indexOf(v)!==-1);},
+        contains: function(arrOrStr,v){if(!arrOrStr){return false;}if(typeof(arrOrStr)!=='string'&&!Array.isArray(arrOrStr)){return false;}return(arrOrStr.indexOf(v)!==-1);},
         extend: function(base,obj,rewrite){if(!base||!obj){return base;}if(typeof(base)!=='object'||typeof(obj)!=='object'){return base;}if(rewrite===undefined){rewrite=true;}var keys=Object.keys(obj);var i=keys.length;while(i--){var key=keys[i];if(rewrite||base[key]===undefined){base[key]=U.clone(obj[key]);}}return base;},
         toQueryString: function(obj,base){var queryString=[];Object.each(obj,function(v,k){if(base){k=base+'['+k+']';}var result=null;switch(typeof(v)){case'object':result=Object.toQueryString(v,k);break;case'array':var qs={};v.each(function(val,i){qs[i]=val;});result=Object.toQueryString(qs,k);break;default:result=k+'='+encodeURIComponent(v);}if(v!=null){queryString.push(result);}});return queryString.join('&');},
         argsToDebugString: function(args){var logs='';for(var i=0;i<arguments.length;i++){var arg=arguments[i];if(arg){if(typeof arg=='object'||Array.isArray(arg)){if(Array.isArray(arg)){logs+='Array('+arg.length+'): \n';}else if(typeof arg=='object'){logs+='Object: \n';}logs+=JSON.stringify(arg,null,'\t');logs+='\n';}else{logs+=arg;}}else{logs+=' '+arg;}}return logs;},
@@ -379,7 +379,11 @@ var Documentation = (function() {
             var str = section.name + '(';
             if (Array.isArray(section.parameters) && section.parameters.length > 0) {
                 U.forEach(section.parameters, function(par, i) {
+                    var optional = U.contains(par.tags, 'OPTIONAL');
                     par = par.name || '-';
+                    if (optional) {
+                        par = '[' + par + ']';
+                    }
                     str += (i === 0) ? par : (', ' + par);
                 });
             }
@@ -390,13 +394,111 @@ var Documentation = (function() {
             var html = '';
             if (Array.isArray(section.parameters) && section.parameters.length > 0) {
                 html += U.strHtml('ul', {
+                    classes: ['list-disc'],
+                    style: {
+                        paddingLeft: '30px'
+                    },
                     html: getParametersAsListItems(section.parameters)
                 });
             }
             return wrapToExpandBody(html);
             function getParametersAsListItems(parameters) {
-                var html = 'List goes here...';
+                var html = '';
+                U.forEach(parameters, function(par) {
+                    html += getParameterAsListItem(par);
+                });
                 return html;
+            }
+            function getParameterAsListItem(par) {
+                if (par.expectedType.toUpperCase() == 'FUNCTION') {
+                    return getFunctionParameterAsListItem(par);
+                }
+                return getBasicParameterAsListItem(par);
+            }
+            function getBasicParameterAsListItem(par) {
+                var html = U.strHtml('div', {
+                    classes: ['table-cell', 'blue'],
+                    html: par.name
+                });
+                if (par.expectedType) {
+                    html += U.strHtml('div', {
+                        classes: ['table-cell', 'silver', 'pl2'],
+                        html: 'expects ' + par.expectedType
+                    });
+                }
+                if (Array.isArray(par.tags) && par.tags.length > 0) {
+                    html += U.strHtml('div', {
+                        classes: ['table-cell', 'align-middle', 'pl2'],
+                        html: getTagsHtml(par.tags)
+                    });
+                }
+                return U.strHtml('li', {
+                    html: U.strHtml('div', {
+                        classes: ['inline-table', 'clearfix', 't5'],
+                        style: {
+                            verticalAlign: '1px'
+                        },
+                        html: html
+                    }) + getBasicParameterBody(par)
+                });
+                function getBasicParameterBody(par) {
+                    var html = '';
+                    if (par.description) {
+                        html += par.description;
+                    }
+                    return U.strHtml('div', {
+                        html: html
+                    });
+                }
+            }
+            function getFunctionParameterAsListItem(par) {
+                var html = U.strHtml('div', {
+                    classes: ['blue'],
+                    html: getFunctionDefinition(par)
+                });
+                if (par.expectedType) {
+                    html += U.strHtml('div', {
+                        classes: ['table-cell', 'silver', 'pl2'],
+                        html: 'expects ' + par.expectedType
+                    });
+                }
+                if (Array.isArray(par.tags) && par.tags.length > 0) {
+                    html += U.strHtml('div', {
+                        classes: ['table-cell', 'align-middle', 'pl2'],
+                        html: getTagsHtml(par.tags)
+                    });
+                }
+                return U.strHtml('li', {
+                    html: U.strHtml('div', {
+                        classes: ['inline-table', 'clearfix', 't5'],
+                        style: {
+                            verticalAlign: '1px'
+                        },
+                        html: html
+                    }) + getFunctionParameterBody(par)
+                });
+                function getFunctionParameterBody(par) {
+                    var html = '';
+                    if (par.description) {
+                        html += par.description;
+                    }
+                    return U.strHtml('div', {
+                        html: html
+                    }) + getFunctionParametersAsList(par.parameters);
+                }
+                function getFunctionParametersAsList(parameters) {
+                    if (!Array.isArray(parameters) || parameters.length === 0) {
+                        return '';
+                    }
+                    var html = '';
+                    U.forEach(parameters, function(par) {
+                        html += getParameterAsListItem(par);
+                    });
+                    return U.strHtml('ul', {
+                        classes: ['list-circle', 'pl3'],
+                        html: html
+                    });
+                }
             }
         }
     }
@@ -414,7 +516,7 @@ var Documentation = (function() {
     }
     function getTagsHtml(tags) {
         var html = '';
-        var classes = ['t8', 'px1', 'border', 'rounded', 'bg-silver'];
+        var classes = ['t9', 'px1', 'border', 'rounded', 'bg-silver', 'semibold', 'darken-6'];
         U.forEach(tags, function(tag, i) {
             if (i > 0) {
                 classes.push('ml1');
