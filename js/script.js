@@ -68,7 +68,7 @@ var Documentation = (function() {
         U.domAppend('body', generateMenu(specification));
         U.domAppend('body', U.strHtml('div', {
             id: 'page',
-            classes: ['mt3'],
+            classes: ['mt3', 'mb4'],
             style: {
                 marginLeft: '320px',
                 width: 'calc(100% - 370px)'
@@ -347,7 +347,7 @@ var Documentation = (function() {
             return wrapToExpandHead(html);
         }
         function getAttributeBody(section) {
-            var html = mdTextToHtml(section.description);
+            var html = markupToHtml(section.description);
             return wrapToExpandBody(html);
         }
     }
@@ -447,7 +447,7 @@ var Documentation = (function() {
                         html += getDefaultValueHtml(par.defaultValue);
                     }
                     if (par.description) {
-                        html += par.description;
+                        html += markupToHtml(par.description);
                     }
                     return U.strHtml('div', {
                         html: html
@@ -486,7 +486,7 @@ var Documentation = (function() {
                         html += getDefaultValueHtml(par.defaultValue);
                     }
                     if (par.description) {
-                        html += par.description;
+                        html += markupToHtml(par.description);
                     }
                     return U.strHtml('div', {
                         html: html
@@ -511,6 +511,9 @@ var Documentation = (function() {
     function wrapToExpandHead(html) {
         return U.strHtml('div', {
             classes: ['js-expand-head', 'table', 'pointer'],
+            style: {
+                padding: '3px 0 5px 0'
+            },
             html: html || '-'
         }) + '<hr>';
     }
@@ -528,20 +531,39 @@ var Documentation = (function() {
     }
     function getTagsHtml(tags) {
         var html = '';
-        var classes = ['t9', 'px1', 'border', 'rounded', 'bg-silver', 'semibold', 'darken-6'];
+        var classes = ['inline-block', 't8', 'px1', 'sh1-border', 'rounded', 'bg-silver', 'semibold', 'darken-6'];
         U.forEach(tags, function(tag, i) {
             if (i > 0) {
                 classes.push('ml1');
             }
             html += U.strHtml('span', {
                 classes: classes,
+                style: {
+                    lineHeight: '1.6em'
+                },
                 html: tag || '-'
             });
         });
         return html;
     }
-    function mdTextToHtml(text) {
-        var html = text;
+    function markupToHtml(text) {
+        text = text.replace(/\[(.*)\]\((.*)\)/, function(whole, name, link) {
+            return U.strHtml('a', {
+                classes: ['purple'],
+                href: link,
+                html: name
+            });
+        });
+        text = text.replace(/`(.*)`/, function(whole, inner) {
+            return U.strHtml('span', {
+                classes: ['t8', 'px1', 'inline-block', 'white', 'bg-purple', 'rounded', 'sh1-border', 'thin'],
+                style: {
+                    lineHeight: '1.5em',
+                    verticalAlign: '0px',
+                },
+                html: inner
+            });
+        });
         return text;
     }
     function bindExpandSections() {
