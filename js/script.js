@@ -68,9 +68,10 @@ var Documentation = (function() {
         U.domAppend('body', generateMenu(specification));
         U.domAppend('body', U.strHtml('div', {
             id: 'page',
-            classes: ['mt3', 'mb4'],
+            classes: ['mt3'],
             style: {
                 marginLeft: '320px',
+                marginBottom: '1000px',
                 width: 'calc(100% - 370px)'
             },
             html: '-'
@@ -260,6 +261,7 @@ var Documentation = (function() {
         }
         function getSectionHeadingHtml(section) {
             return U.strHtml('h' + section.level, {
+                id: 'heading-' + U.strSlug(section.text),
                 html: section.text || 'No heading'
             });
         }
@@ -344,7 +346,7 @@ var Documentation = (function() {
                     html: getTagsHtml(section.tags)
                 });
             }
-            return wrapToExpandHead(html);
+            return wrapToExpandHead(html, 'attribute-' + U.strSlug(section.name));
         }
         function getAttributeBody(section) {
             var html = markupToHtml(section.description);
@@ -370,7 +372,7 @@ var Documentation = (function() {
                     html: getTagsHtml(section.tags)
                 });
             }
-            return wrapToExpandHead(html);
+            return wrapToExpandHead(html, 'function-' + U.strSlug(section.name));
         }
         function getFunctionDefinition(section) {
             if (!section.name) {
@@ -508,8 +510,9 @@ var Documentation = (function() {
             }
         }
     }
-    function wrapToExpandHead(html) {
+    function wrapToExpandHead(html, id) {
         return U.strHtml('div', {
+            id: id,
             classes: ['js-expand-head', 'table', 'pointer'],
             style: {
                 padding: '3px 0 5px 0'
