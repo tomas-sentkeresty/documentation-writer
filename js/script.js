@@ -35,6 +35,7 @@ var Documentation = (function() {
         __domInternal: {handler:{}},
         domReady: function(fn){if(document.attachEvent?(document.readyState==="complete"):(document.readyState!=="loading")){fn();}else{document.addEventListener('DOMContentLoaded',fn);}},
         isDomEl: function(el){return(el instanceof Element||el instanceof HTMLDocument);},
+        domMatches: function(el,sel){var p=Element.prototype;var f=p.matches||p.webkitMatchesSelector||p.mozMatchesSelector||p.msMatchesSelector||function(s){return(Array.prototype.indexOf.call(document.querySelectorAll(s),this)!==-1);};return f.call(el,sel);},
         domFind: function(sel,el){var list=null;if(!sel||typeof(sel)!=='string'){throw new Error('invalidParameter');}if(el&&U.isDomEl(el)){list=el.querySelectorAll(sel);}else{list=document.querySelectorAll(sel);}if(list){if(selectingOne(sel)){return list[0]||null;}else{var arr=[];var len=list.length;arr.length=len;for(var i=0;i<len;i++){if(list[i]){arr[i]=list[i];}}return arr;}}else{if(selectingOne(sel)){return null;}return[];}function selectingOne(sel){if(U.isDomEl(sel)){return true;}else if(typeof(sel)==='string'){var parts=sel.split(/\s+/);return(parts&&parts.length==1&&parts[0][0]=='#');}return false;}},
         domHasClass: function(el,name){if(!el||!U.isDomEl(el)){throw new Error('invalidParameter');}if(el.classList){return el.classList.contains(name);}else{var exp=new RegExp('(^| )'+name+'( |$)','gi');return exp.test(el.className);}},
         domAddClass: function(sel,v){if(!sel){throw new Error('invalidParameter');}if(!v||typeof(v)!=='string'){return new Error('invalidParameter');}var els=null;if(Array.isArray(sel)){els=sel;}else if(U.isDomEl(sel)){els=[sel];}else{els=U.domFind(sel);els=Array.isArray(els)?els:[els];}if(Array.isArray(els)){var len=els.length;for(var i=0;i<len;i++){var el=els[i];if(!el){continue;}var clas=v.split(/\s+/);var lenlen=clas.length;for(var j=0;j<lenlen;j++){var cla=clas[j];addClass(el,cla);}}}function addClass(el,v){if(el.classList){el.classList.add(v);}else{el.className+=' '+v;}}},
@@ -48,7 +49,8 @@ var Documentation = (function() {
         domParent: function(sel){if(!sel){throw new Error('invalidParameter');}var els=null;if(Array.isArray(sel)){els=sel;}else if(U.isDomEl(sel)){els=[sel];}else{els=U.domFind(sel);els=Array.isArray(els)?els:[els];}var arr=[];if(Array.isArray(els)){for(var i=0;i<els.length;i++){var el=els[i];if(el){arr.push(getParent(el));}}}return selectingOne(sel)?arr[0]:arr;function getParent(el){return el.parentNode||null;}function selectingOne(sel){if(U.isDomEl(sel)){return true;}else if(typeof(sel)==='string'){var parts=sel.split(/\s+/);return(parts&&parts.length==1&&parts[0][0]=='#');}return false;}},
         domChildren: function(sel){if(!sel){throw new Error('invalidParameter');}var els=null;if(Array.isArray(sel)){els=sel;}else if(U.isDomEl(sel)){els=[sel];}else{els=U.domFind(sel);els=Array.isArray(els)?els:[els];}var arr=[];if(Array.isArray(els)){for(var i=0;i<els.length;i++){var el=els[i];if(el){arr.push(getChildren(el));}}}return selectingOne(sel)?arr[0]:arr;function getChildren(el){var els=el.children||[];var arr=[];for(var i=0;i<els.length;i++){arr[i]=els[i];}return arr;}function selectingOne(sel){if(U.isDomEl(sel)){return true;}else if(typeof(sel)==='string'){var parts=sel.split(/\s+/);return(parts&&parts.length==1&&parts[0][0]=='#');}return false;}},
         domSiblings: function(sel){if(!sel){throw new Error('invalidParameter');}var els=null;if(Array.isArray(sel)){els=sel;}else if(U.isDomEl(sel)){els=[sel];}else{els=U.domFind(sel);els=Array.isArray(els)?els:[els];}var arr=[];if(Array.isArray(els)){for(var i=0;i<els.length;i++){var el=els[i];if(el){arr.push(getSiblings(el));}}}return selectingOne(sel)?arr[0]:arr;function getSiblings(el){var els=(el.parentNode&&el.parentNode.children)?el.parentNode.children:[];var arr=[];for(var i=0;i<els.length;i++){var ch=els[i];if(ch!==el){arr.push(ch);}}return arr;}},
-        domPrev: function(sel){if(!sel){throw new Error('invalidParameter');}var els=null;if(Array.isArray(sel)){els=sel;}else if(U.isDomEl(sel)){els=[sel];}else{els=U.domFind(sel);els=Array.isArray(els)?els:[els];}var arr=[];if(Array.isArray(els)){for(var i=0;i<els.length;i++){var el=els[i];if(el){arr.push(getPrev(el));}}}return selectingOne(sel)?arr[0]:arr;function getPrev(el){return el.previousElementSibling||null;}function selectingOne(sel){if(U.isDomEl(sel)){return true;}else if(typeof(sel)==='string'){var parts=sel.split(/\s+/);return(parts&&parts.length==1&&parts[0][0]=='#');}return false;}},
+        domPrev: function(sel){if(!sel){throw new Error('invalidParameter');}var els=null;if(Array.isArray(sel)){els=sel;}else if(U.isDomEl(sel)){els=[sel];}else{els=U.domFind(sel);els=Array.isArray(els)?els:[els];}var arr=[];if(Array.isArray(els)){for(var i=0;i<els.length;i++){var el=els[i];if(el){arr.push(getPrev(el));}}}return selectingOne(sel)?arr[0]:arr;function getPrev(el,psel){var els=(el.parentNode&&el.parentNode.children)?el.parentNode.children:[];var arr=[];var brk=false;for(var i=els.length-1;i>=0;i--){var sib=els[i];if(sib===el){brk=true;continue;}if(brk&&sib&&(U.domMatches(sib,psel)||!psel)){return sib;}else{continue;}}return null;}function selectingOne(sel){if(U.isDomEl(sel)){return true;}else if(typeof(sel)==='string'){var parts=sel.split(/\s+/);return(parts&&parts.length==1&&parts[0][0]=='#');}return false;}},
+        domNext: function(sel,nsel){if(!sel){throw new Error('invalidParameter');}var els=null;if(Array.isArray(sel)){els=sel;}else if(U.isDomEl(sel)){els=[sel];}else{els=U.domFind(sel);els=Array.isArray(els)?els:[els];}var arr=[];if(Array.isArray(els)){for(var i=0;i<els.length;i++){var el=els[i];if(el){arr.push(getNext(el,nsel));}}}return selectingOne(sel)?arr[0]:arr;function getNext(el,nsel){var els=(el.parentNode&&el.parentNode.children)?el.parentNode.children:[];var arr=[];var brk=false;for(var i=0;i<els.length;i++){var sib=els[i];if(sib===el){brk=true;continue;}if(brk&&sib&&(U.domMatches(sib,nsel)||!nsel)){return sib;}else{continue;}}return null;}function selectingOne(sel){if(U.isDomEl(sel)){return true;}else if(typeof(sel)==='string'){var parts=sel.split(/\s+/);return(parts&&parts.length==1&&parts[0][0]=='#');}return false;}},
         domStyle: function(sel,k,v){if(!sel){throw new Error('invalidParameter');}if(!k||typeof(k)!=='string'){throw new Error('invalidParameter');}if(v&&(typeof(v)!=='string'&&isNaN(v))){throw new Error('invalidParameter');}var els=null;if(Array.isArray(sel)){els=sel;}else if(U.isDomEl(sel)){els=[sel];}else{els=U.domFind(sel);els=Array.isArray(els)?els:[els];}var arr=[];if(Array.isArray(els)){for(var i=0;i<els.length;i++){var el=els[i];if(!el){continue;}if(v===undefined){arr.push(getStyle(el,k));}else{setStyle(el,k,v);}}}return selectingOne(sel)?arr[0]:arr;function getStyle(el,k){return el.style[k]||null;}function setStyle(el,k,v){el.style[k]=v;}function selectingOne(sel){if(U.isDomEl(sel)){return true;}else if(typeof(sel)==='string'){var parts=sel.split(/\s+/);return(parts&&parts.length==1&&parts[0][0]=='#');}return false;}},
         domFadeIn: function(sel,t){if(!sel){throw new Error('invalidParameter');}var els=null;if(Array.isArray(sel)){els=sel;}else if(U.isDomEl(sel)){els=[sel];}else{els=U.domFind(sel);els=Array.isArray(els)?els:[els];}if(Array.isArray(els)){for(var i=0;i<els.length;i++){var el=els[i];if(el){fadeIn(el,t);}}}function fadeIn(el,t){el.style.transition='opacity '+(t&&!isNaN(t)&&t>0?t:250)+'ms';el.style.opacity='1';}function selectingOne(sel){if(U.isDomEl(sel)){return true;}else if(typeof(sel)==='string'){var parts=sel.split(/\s+/);return(parts&&parts.length==1&&parts[0][0]=='#');}return false;}},
         domFadeOut: function(sel,t){if(!sel){throw new Error('invalidParameter');}var els=null;if(Array.isArray(sel)){els=sel;}else if(U.isDomEl(sel)){els=[sel];}else{els=U.domFind(sel);els=Array.isArray(els)?els:[els];}if(Array.isArray(els)){for(var i=0;i<els.length;i++){var el=els[i];if(el){fadeOut(el,t);}}}function fadeOut(el,t){el.style.transition='opacity '+(t&&!isNaN(t)&&t>0?t:250)+'ms';el.style.opacity='0';}},
@@ -250,6 +252,8 @@ var Documentation = (function() {
                     return getSectionCode(section);
                 case 'ATTRIBUTE':
                     return getSectionAttribute(section);
+                case 'FUNCTION':
+                    return getSectionFunction(section);
                 default:
                     return '';
             }
@@ -322,37 +326,117 @@ var Documentation = (function() {
         });
     }
     function getSectionAttribute(section) {
-        var row = '';
-        if (Array.isArray(section.tags) && section.tags.length > 0) {
-            U.forEach(section.tags, function(tag, i) {
-                row += U.strHtml('table-cell', {
-                    html: getTagHtml(tag, i === 0)
+        return getAttributeHead(section) + getAttributeBody(section);
+        function getAttributeHead(section) {
+            var html = U.strHtml('div', {
+                classes: ['table-cell', 'align-middle', 't4', 'blue'],
+                html: section.name || '-'
+            });
+            if (section.returnType) {
+                html += U.strHtml('div', {
+                    classes: ['table-cell', 'align-middle', 't5', 'pl2', 'silver', 'thin'],
+                    html: 'returns ' + section.returnType
                 });
-            });
+            }
+            if (Array.isArray(section.tags) && section.tags.length > 0) {
+                html += U.strHtml('div', {
+                    classes: ['table-cell', 'align-middle', 'pl2'],
+                    html: getTagsHtml(section.tags)
+                });
+            }
+            return wrapToExpandHead(html);
         }
-        row += U.strHtml('table-cell', {
-            classes: ['align-middle', 't4', 'blue', 'pointer', 'ml2'],
-            html: section.meta.name || '-'
-        });
-        if (section.meta.type) {
-            row += U.strHtml('table-cell', {
-                classes: ['align-middle', 't5', 'ml2', 'silver', 'thin'],
-                html: section.meta.type
-            });
+        function getAttributeBody(section) {
+            var html = mdTextToHtml(section.description);
+            return wrapToExpandBody(html);
         }
-        return U.strHtml('table', {
-            html: row
+    }
+    function getSectionFunction(section) {
+        return getFunctionHead(section) + getFunctionBody(section);
+        function getFunctionHead(section) {
+            var html = U.strHtml('div', {
+                classes: ['table-cell', 'align-middle', 't4', 'blue'],
+                html: getFunctionDefinition(section)
+            });
+            if (section.returnType) {
+                html += U.strHtml('div', {
+                    classes: ['table-cell', 'align-middle', 't5', 'pl2', 'silver', 'thin'],
+                    html: 'returns ' + section.returnType
+                });
+            }
+            if (Array.isArray(section.tags) && section.tags.length > 0) {
+                html += U.strHtml('div', {
+                    classes: ['table-cell', 'align-middle', 'pl2'],
+                    html: getTagsHtml(section.tags)
+                });
+            }
+            return wrapToExpandHead(html);
+        }
+        function getFunctionDefinition(section) {
+            if (!section.name) {
+                return '-';
+            }
+            var str = section.name + '(';
+            if (Array.isArray(section.parameters) && section.parameters.length > 0) {
+                U.forEach(section.parameters, function(par, i) {
+                    par = par.name || '-';
+                    str += (i === 0) ? par : (', ' + par);
+                });
+            }
+            str += ')';
+            return str;
+        }
+        function getFunctionBody(section) {
+            var html = '';
+            if (Array.isArray(section.parameters) && section.parameters.length > 0) {
+                html += U.strHtml('ul', {
+                    html: getParametersAsListItems(section.parameters)
+                });
+            }
+            return wrapToExpandBody(html);
+            function getParametersAsListItems(parameters) {
+                var html = 'List goes here...';
+                return html;
+            }
+        }
+    }
+    function wrapToExpandHead(html) {
+        return U.strHtml('div', {
+            classes: ['js-expand-head', 'table', 'pointer'],
+            html: html || '-'
         }) + '<hr>';
-        function getTagHtml(name, first) {
-            var classes = ['t8', 'px1', 'border', 'rounded', 'bg-silver'];
-            if (!first) {
+    }
+    function wrapToExpandBody(html) {
+        return U.strHtml('div', {
+            classes: ['js-expand-body', 'hide', 'pt1', 'pb2'],
+            html: html || '-'
+        });
+    }
+    function getTagsHtml(tags) {
+        var html = '';
+        var classes = ['t8', 'px1', 'border', 'rounded', 'bg-silver'];
+        U.forEach(tags, function(tag, i) {
+            if (i > 0) {
                 classes.push('ml1');
             }
-            return U.strHtml('span', {
+            html += U.strHtml('span', {
                 classes: classes,
-                html: name || '-'
+                html: tag || '-'
             });
-        }
+        });
+        return html;
+    }
+    function mdTextToHtml(text) {
+        var html = text;
+        return text;
+    }
+    function bindExpandSections() {
+        U.domOn('.js-expand-head', 'click', function(e) {
+            var body = U.domNext(e.currentTarget, '.js-expand-body');
+            if (body) {
+                U.domToggleClass(body, 'hide');
+            }
+        });
     }
     function bindRoutes(parameters, specification) {
         var groupSlug = parameters.get('group');
@@ -388,6 +472,7 @@ var Documentation = (function() {
                 createLayout(specification);
                 bindRoutes(new URLSearchParams(window.location.search), specification);
                 bindMenuEvents(specification);
+                bindExpandSections();
             });
         }
     };

@@ -60,28 +60,35 @@
                         }, {
                             type: 'ATTRIBUTE',
                             tags: ['STATIC', 'READONLY'],
-                            meta: {
-                                name: 'attributeName1',
-                                description: 'Attribute description1',
-                                type: 'String'
-                            }
+                            name: 'attributeName1',
+                            description: 'Attribute description1 [npm install gets killed](http://prashank.xyz/2016/01/24/npm_install_gets_killed/)',
+                            returnType: 'String'
                         }, {
                             type: 'ATTRIBUTE',
                             tags: ['STATIC', 'READONLY'],
-                            meta: {
-                                name: 'attributeName2',
-                                description: 'Attribute description2',
-                                type: 'Number'
-                            }
+                            name: 'attributeName2',
+                            description: 'Attribute description2',
+                            returnType: 'Number'
+                        }, {
+                            type: 'HEADING',
+                            level: 2,
+                            text: 'Functions'
                         }, {
                             type: 'FUNCTION',
-                            params: [{
-                                type: 'String',
+                            name: 'authenticate',
+                            tags: ['SYNC'],
+                            returnType: 'Object',
+                            description: 'Delegate to authenticate user.',
+                            parameters: [{
+                                type: 'Object',
+                                name: 'request',
                                 description: 'Function description',
                             }, {
                                 type: 'Function',
-                                fnParams: [{
-                                    type: 'String',
+                                name: 'callback',
+                                parameters: [{
+                                    type: 'Object',
+                                    name: 'user',
                                     description: 'Callback param description'
                                 }]
                             }],
