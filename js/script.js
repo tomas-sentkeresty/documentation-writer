@@ -145,10 +145,12 @@ var Documentation = (function() {
     function addSlugsToSpecification(specification) {
         specification.menuGroups = U.map(specification.menuGroups, function(menuGroup) {
             menuGroup.slug = U.strSlug(menuGroup.title);
-            menuGroup.menuItems = U.map(menuGroup.menuItems, function(menuItem) {
-                menuItem.slug = U.strSlug(menuItem.title);
-                return menuItem;
-            });
+            if (Array.isArray(menuGroup.menuItems) && menuGroup.menuItems.length > 0) {
+                menuGroup.menuItems = U.map(menuGroup.menuItems, function(menuItem) {
+                    menuItem.slug = U.strSlug(menuItem.title);
+                    return menuItem;
+                });
+            }
             return menuGroup;
         });
         return specification;
@@ -185,7 +187,7 @@ var Documentation = (function() {
                     data: {
                         slug: menuGroup.slug
                     },
-                    html: getMenuGroupTitleHtml(menuGroup) + U.reduce(menuGroup.menuItems, getMenuItemHtml, '')
+                    html: getMenuGroupTitleHtml(menuGroup) + getMenuItemsHtml(menuGroup.menuItems)
                 };
                 html += U.strHtml('div', options);
                 return html;
@@ -200,15 +202,20 @@ var Documentation = (function() {
                 }
                 return U.strHtml('div', options);
             }
-            function getMenuItemHtml(html, menuItem) {
-                html += U.strHtml('div', {
-                    id: 'menu-item-' + U.strSlug(menuItem.title),
-                    classes: ['js-menu-item', 't5', 'mt0', 'hv-underline', 'pointer'],
-                    data: {
-                        slug: menuItem.slug
-                    },
-                    html: '- ' + (menuItem.title || 'Unnamed menu item')
-                });
+            function getMenuItemsHtml(menuItems) {
+                var html = '';
+                if (Array.isArray(menuItems) && menuItems.length > 0) {
+                    U.forEach(menuItems, function(menuItem) {
+                        html += U.strHtml('div', {
+                            id: 'menu-item-' + U.strSlug(menuItem.title),
+                            classes: ['js-menu-item', 't5', 'mt0', 'hv-underline', 'pointer'],
+                            data: {
+                                slug: menuItem.slug
+                            },
+                            html: '- ' + (menuItem.title || 'Unnamed menu item')
+                        });
+                    });
+                }
                 return html;
             }
         }
@@ -313,17 +320,22 @@ var Documentation = (function() {
         }
     }
     function getSectionCode(section) {
+        var classes = ['sh1-border'];
+        if (section.language) {
+            classes.push(section.language);
+        }
         return U.strHtml('pre', {
             style: {
                 overflowX: 'auto'
             },
             html: U.strHtml('code', {
+                classes: classes,
                 style: {
                     padding: '7px 10px',
                     fontSize: '11px',
                     lineHeight: '1.5em'
                 },
-                html: section.code
+                html: normalizeCodeForHtml(section.code)
             })
         });
     }
@@ -394,6 +406,9 @@ var Documentation = (function() {
         }
         function getFunctionBody(section) {
             var html = '';
+            if (section.description) {
+                html += markupToHtml(section.description);
+            }
             if (Array.isArray(section.parameters) && section.parameters.length > 0) {
                 html += U.strHtml('ul', {
                     classes: ['list-disc'],
@@ -576,6 +591,17 @@ var Documentation = (function() {
             });
         });
         return text;
+    }
+    function normalizeCodeForHtml(code) {
+        code = code.replace(/(<)|(>)/g, function(whole, less, greater) {
+            if (less) {
+                return '&lt;';
+            }
+            if (greater) {
+                return '&gt;'
+            }
+        });
+        return code;
     }
     function bindExpandSections() {
         U.domOn('.js-expand-head', 'click', function(e) {
