@@ -346,10 +346,11 @@ var Documentation = (function() {
                 classes: ['table-cell', 'align-middle', 't4', 'blue'],
                 html: section.name || '-'
             });
-            if (section.returnType) {
+            if (section.returnType || section.expectedType) {
+                var prefix = section.returnType ? 'returns ' : 'expects '
                 html += U.strHtml('div', {
                     classes: ['table-cell', 'align-middle', 't5', 'pl2', 'silver', 'thin'],
-                    html: 'returns ' + section.returnType
+                    html: prefix + (section.returnType || section.expectedType)
                 });
             }
             if (Array.isArray(section.tags) && section.tags.length > 0) {
@@ -587,6 +588,12 @@ var Documentation = (function() {
                     lineHeight: '1.5em',
                     verticalAlign: '0px',
                 },
+                html: inner
+            });
+        });
+        text = text.replace(/\*\*(.*?)\*\*/g, function(whole, inner) {
+            return U.strHtml('span', {
+                classes: ['bold'],
                 html: inner
             });
         });

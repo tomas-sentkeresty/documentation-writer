@@ -63,17 +63,17 @@
                             text: 'Attributes'
                         }, {
                             type: 'ATTRIBUTE',
-                            tags: ['STATIC', 'NULLABLE'],
                             name: 'attributeName1',
+                            returnType: 'String',
+                            tags: ['STATIC', 'NULLABLE'],
                             description: `Description for \`attributeName1\` [first link to npm](http://prashank.xyz/2016/01/24/npm_install_gets_killed/) and refers to \`name\` parameter.
-                                New sentence with [second link to npm](http://prashank.xyz/2016/01/24/npm_install_gets_killed/).`,
-                            returnType: 'String'
+                                New sentence with [second link to npm](http://prashank.xyz/2016/01/24/npm_install_gets_killed/).`
                         }, {
                             type: 'ATTRIBUTE',
-                            tags: ['STATIC', 'READONLY'],
                             name: 'attributeName2',
-                            description: 'Description for `attributeName2`.',
-                            returnType: 'Number'
+                            returnType: 'Number',
+                            tags: ['STATIC', 'READONLY'],
+                            description: 'Description for `attributeName2`.'
                         }, {
                             type: 'HEADING',
                             level: 2,
@@ -81,8 +81,8 @@
                         }, {
                             type: 'FUNCTION',
                             name: 'authenticate',
-                            tags: ['SYNC'],
                             returnType: 'Object',
+                            tags: ['SYNC'],
                             description: 'Delegate to authenticate user.',
                             parameters: [{
                                 expectedType: 'Object',
@@ -103,7 +103,6 @@
                                     description: 'Callback param description `test code`.'
                                 }]
                             }],
-                            returns: 'Array'
                         }]
                     }, {
                         title: 'API',
@@ -120,10 +119,10 @@
                             text: 'Attributes'
                         }, {
                             type: 'ATTRIBUTE',
-                            tags: [],
                             name: 'attributeName1',
+                            returnType: 'String',
+                            tags: [],
                             description: 'Description for `attributeName1`, see [TextEditable.DataModel.authenticate](?group=texteditable&item=datamodel#function-authenticate).',
-                            returnType: 'String'
                         }]
                     }]
                 }]
