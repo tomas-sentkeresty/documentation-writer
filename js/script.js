@@ -68,7 +68,7 @@ var Documentation = (function() {
         U.domAppend('body', generateMenu(specification));
         U.domAppend('body', U.strHtml('div', {
             id: 'page',
-            classes: ['mt3'],
+            classes: ['mt20'],
             style: {
                 marginLeft: '320px',
                 marginBottom: '1000px',
@@ -177,13 +177,13 @@ var Documentation = (function() {
                 }
                 html += obj.title || 'Unnamed documentation';
                 return U.strHtml('div', {
-                    classes: ['t3', 'pt3', 'px2', 'truncate', 'bold'],
+                    classes: ['t3', 'pt30', 'px20', 'truncate', 'bold'],
                     html: html
                 });
             }
             function getMenuGroupHtml(html, menuGroup) {
                 var options = {
-                    classes: ['mx2', 't5', 'mt2'],
+                    classes: ['mx20', 't5', 'mt20'],
                     data: {
                         slug: menuGroup.slug
                     },
@@ -286,7 +286,10 @@ var Documentation = (function() {
                     html: ''
                 };
                 if (nested) {
-                    listOptions.classes.push('pl2');
+                    listOptions.classes.push('pl20');
+                }
+                else {
+                    listOptions.classes = listOptions.classes.concat(['pl18', 'pb15']);
                 }
                 if (!ordered) {
                     listOptions.classes.push('list-disc');
@@ -311,7 +314,7 @@ var Documentation = (function() {
                 }
                 else {
                     return U.strHtml('div', {
-                        classes: ['pt2', 'pb1'],
+                        classes: ['pt0', 'pb0'],
                         html: U.strHtml(tag, listOptions)
                     });
                 }
@@ -329,10 +332,8 @@ var Documentation = (function() {
                 overflowX: 'auto'
             },
             html: U.strHtml('code', {
-                classes: classes,
+                classes: ['py7', 'px10', 't7'],
                 style: {
-                    padding: '7px 10px',
-                    fontSize: '11px',
                     lineHeight: '1.5em'
                 },
                 html: normalizeCodeForHtml(section.code)
@@ -349,13 +350,13 @@ var Documentation = (function() {
             if (section.returnType || section.expectedType) {
                 var prefix = section.returnType ? 'returns ' : 'expects '
                 html += U.strHtml('div', {
-                    classes: ['table-cell', 'align-middle', 't5', 'pl2', 'silver', 'thin'],
+                    classes: ['table-cell', 'align-middle', 't5', 'pl20', 'silver', 'thin'],
                     html: prefix + (section.returnType || section.expectedType)
                 });
             }
             if (Array.isArray(section.tags) && section.tags.length > 0) {
                 html += U.strHtml('div', {
-                    classes: ['table-cell', 'align-middle', 'pl2'],
+                    classes: ['table-cell', 'align-middle', 'pl20'],
                     html: getTagsHtml(section.tags)
                 });
             }
@@ -375,13 +376,13 @@ var Documentation = (function() {
             });
             if (section.returnType) {
                 html += U.strHtml('div', {
-                    classes: ['table-cell', 'align-middle', 't5', 'pl2', 'silver', 'thin'],
+                    classes: ['table-cell', 'align-middle', 't5', 'pl20', 'silver', 'thin'],
                     html: 'returns ' + section.returnType
                 });
             }
             if (Array.isArray(section.tags) && section.tags.length > 0) {
                 html += U.strHtml('div', {
-                    classes: ['table-cell', 'align-middle', 'pl2'],
+                    classes: ['table-cell', 'align-middle', 'pl20'],
                     html: getTagsHtml(section.tags)
                 });
             }
@@ -440,13 +441,13 @@ var Documentation = (function() {
                 });
                 if (par.expectedType) {
                     html += U.strHtml('div', {
-                        classes: ['table-cell', 'silver', 'pl2'],
+                        classes: ['table-cell', 'silver', 'pl20'],
                         html: 'expects ' + par.expectedType
                     });
                 }
                 if (Array.isArray(par.tags) && par.tags.length > 0) {
                     html += U.strHtml('div', {
-                        classes: ['table-cell', 'align-middle', 'pl2'],
+                        classes: ['table-cell', 'align-middle', 'pl20'],
                         html: getTagsHtml(par.tags)
                     });
                 }
@@ -479,13 +480,13 @@ var Documentation = (function() {
                 });
                 if (par.expectedType) {
                     html += U.strHtml('div', {
-                        classes: ['table-cell', 'silver', 'pl2'],
+                        classes: ['table-cell', 'silver', 'pl20'],
                         html: 'expects ' + par.expectedType
                     });
                 }
                 if (Array.isArray(par.tags) && par.tags.length > 0) {
                     html += U.strHtml('div', {
-                        classes: ['table-cell', 'align-middle', 'pl2'],
+                        classes: ['table-cell', 'align-middle', 'pl20'],
                         html: getTagsHtml(par.tags)
                     });
                 }
@@ -519,7 +520,7 @@ var Documentation = (function() {
                         html += getParameterAsListItem(par);
                     });
                     return U.strHtml('ul', {
-                        classes: ['list-circle', 'pl3'],
+                        classes: ['list-circle', 'pl30'],
                         html: html
                     });
                 }
@@ -538,7 +539,7 @@ var Documentation = (function() {
     }
     function wrapToExpandBody(html) {
         return U.strHtml('div', {
-            classes: ['js-expand-body', 'hide', 'pt1', 'pb2'],
+            classes: ['js-expand-body', 'hide', 'pt7', 'pb12'],
             html: html || '-'
         });
     }
@@ -550,10 +551,10 @@ var Documentation = (function() {
     }
     function getTagsHtml(tags) {
         var html = '';
-        var classes = ['inline-block', 't8', 'px1', 'sh1-border', 'rounded', 'bg-silver', 'semibold', 'darken-6'];
+        var classes = ['inline', 't8', 'px10', 'sh1-border', 'rounded', 'bg-silver', 'semibold', 'darken-6'];
         U.forEach(tags, function(tag, i) {
             if (i > 0) {
-                classes.push('ml1');
+                classes.push('ml5');
             }
             html += U.strHtml('span', {
                 classes: classes,
@@ -583,10 +584,10 @@ var Documentation = (function() {
         });
         text = text.replace(/`(.*?)`/g, function(whole, inner) {
             return U.strHtml('span', {
-                classes: ['t8', 'px1', 'inline-block', 'white', 'bg-purple', 'rounded', 'sh1-border', 'thin'],
+                classes: ['t7', 'px5', 'py2', 'inline-block', 'white', 'bg-purple', 'rounded', 'sh1-border', 'thin'],
                 style: {
-                    lineHeight: '1.5em',
-                    verticalAlign: '0px',
+                    lineHeight: '1em'
+                    // verticalAlign: '0px',
                 },
                 html: inner
             });
